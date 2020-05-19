@@ -1,12 +1,15 @@
 from direct.showbase.ShowBase import ShowBase
 from direct.task import Task
+from direct.actor.Actor import Actor
 
 
 class HackableApp(ShowBase):
     def __init__(self):
         super().__init__(self)
+        self.renderables = []
 
     def add_renderable(self, renderable):
+        self.renderables.append(renderable)
         renderable.reparentTo(self.render)
 
     def add_task(self, func, continuous=True):
@@ -28,6 +31,11 @@ def build_game():
     scene.setScale(*[0.1] * 3)
     scene.setPos(-5, 40, 0)
     game.add_renderable(scene)
+
+    panda = Actor("models/panda-model", {"walk": "models/panda-walk4"})
+    panda.setScale(*[0.003] * 3)
+    panda.loop("walk")
+    game.add_renderable(panda)
 
     # animate camera
     game.add_task(
