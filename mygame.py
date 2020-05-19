@@ -123,7 +123,7 @@ def build_game():
     game = HackableApp(1280, 720)
 
     # add some trees n stuff
-    scene = game.loader.loadModel("models/environment")
+    scene = loader.loadModel("models/environment")
     scene.setScale(*[0.1] * 3)
     scene.setPos(-5, 40, 0)
     game.add_renderable(scene)
