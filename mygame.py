@@ -2,17 +2,9 @@ from direct.showbase.ShowBase import ShowBase
 from direct.task import Task
 
 
-class Main(ShowBase):
+class HackableApp(ShowBase):
     def __init__(self):
         super().__init__(self)
-
-        scene = self.loader.loadModel("models/environment")
-        scene.setScale(*[0.1] * 3)
-        scene.setPos(-5, 40, 0)
-        self.add_renderable(scene)
-        self.add_task(
-            lambda app, t: app.camera.setPos(0, -t.time, 0.1 * t.time)
-        )
 
     def add_renderable(self, renderable):
         renderable.reparentTo(self.render)
@@ -28,5 +20,17 @@ class Main(ShowBase):
         self.taskMgr.add(wrapped_func, func.__name__)
 
 
+def build_game():
+    game = HackableApp()
+    scene = game.loader.loadModel("models/environment")
+    scene.setScale(*[0.1] * 3)
+    scene.setPos(-5, 40, 0)
+    game.add_renderable(scene)
+    game.add_task(
+        lambda app, t: app.camera.setPos(0, -t.time, 0.1 * t.time)
+    )
+    return game
+
+
 if __name__ == "__main__":
-    Main().run()
+    build_game().run()
