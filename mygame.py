@@ -141,16 +141,20 @@ def get_ambient_light(r, g, b):
     return light
 
 
-def get_point_light(r, g, b, const=1, linear=0, quadratic=1):
+def get_point_light(r, g, b, const=1, linear=0, quadratic=1, shadows=True):
     light = PointLight(f"pointlight {r} {g} {b}")
     light.setColor(Vec4(r, g, b, 1))
     light.setAttenuation((const, linear, quadratic))  # c l q
+    if shadows:
+        light.setShadowCaster(True)
     return light
 
 
-def get_directional_light(r, g, b):
+def get_directional_light(r, g, b, shadows=True):
     light = DirectionalLight(f"directionallight {r} {g} {b}")
     light.setColor(Vec4(r, g, b, 1))
+    if shadows:
+        light.setShadowCaster(True)  # doesn't seem to work?
     return light
 
 
@@ -178,10 +182,10 @@ def build_game():
     )
 
     # add lighting
-    game.add_light(get_ambient_light(0.6, 0.15, 0.15))
-    game.add_light(get_point_light(0.1, 0.4, 0.7), pos=(0, 0, 2))
+    game.add_light(get_ambient_light(0.3, 0.1, 0.1))
+    game.add_light(get_point_light(0.1, 0.3, 0.6), pos=(0, 0, 2))
     game.add_light(get_directional_light(0.3, 0.3, 0.3), hpr=(30, -45, 0))
-    game.add_light(get_directional_light(0, 0.4, 0.1), hpr=(60, -60, 0))
+    game.add_light(get_directional_light(0, 0.3, 0.1), hpr=(60, -60, 0))
     game.add_light(get_directional_light(0, 0.1, 0.4), hpr=(-5, -60, 0))
 
     return game
