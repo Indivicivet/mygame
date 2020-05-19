@@ -22,13 +22,18 @@ class HackableApp(ShowBase):
 
 def build_game():
     game = HackableApp()
+
+    # add some trees n stuff
     scene = game.loader.loadModel("models/environment")
     scene.setScale(*[0.1] * 3)
     scene.setPos(-5, 40, 0)
     game.add_renderable(scene)
+
+    # animate camera
     game.add_task(
         lambda app, t: app.camera.setPos(0, -t.time, 0.1 * t.time)
     )
+
     return game
 
 
