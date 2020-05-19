@@ -178,9 +178,11 @@ def build_game():
     )
 
     # add lighting
-    game.add_light(get_ambient_light(0.7, 0.2, 0.2))
-    game.add_light(get_point_light(0.2, 0.5, 1), pos=(0, 0, 2))
-    game.add_light(get_directional_light(0.4, 0.4, 0.4), hpr=(30, -45, 0))
+    game.add_light(get_ambient_light(0.6, 0.15, 0.15))
+    game.add_light(get_point_light(0.1, 0.4, 0.7), pos=(0, 0, 2))
+    game.add_light(get_directional_light(0.3, 0.3, 0.3), hpr=(30, -45, 0))
+    game.add_light(get_directional_light(0, 0.4, 0.1), hpr=(60, -60, 0))
+    game.add_light(get_directional_light(0, 0.1, 0.4), hpr=(-5, -60, 0))
 
     return game
 
