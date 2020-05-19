@@ -1,4 +1,5 @@
 import itertools
+import math
 
 from direct.showbase.ShowBase import ShowBase
 from direct.task import Task
@@ -57,6 +58,26 @@ def actor_add_heading_loop(actor, points, durations=None):
     invoke_interval_point3_loop(actor.hprInterval, points, durations)
 
 
+RADS_TO_DEGS = 180 / math.pi
+
+
+def actor_path_with_turn_anim(actor, points, durations=[1], turn_anim_time=0.2):
+    actor_add_pos_loop(actor, points, durations)
+    actor_add_heading_loop(
+        actor,
+        [
+            Point3(math.atan2(vec.x, vec.y) * RADS_TO_DEGS, 0, 0)
+            for a, b in zip(points, points[1:] + [points[0]])
+            for vec in [(Point3(a) - Point3(b))] * 2
+        ],
+        [
+            x
+            for d in durations
+            for x in [d * (1 - turn_anim_time), d * turn_anim_time]
+        ]
+    )
+
+
 def build_game():
     game = HackableApp()
 
@@ -71,11 +92,7 @@ def build_game():
     panda.loop("walk")
     game.add_renderable(panda)
 
-    movetime = 2
-    actor_add_pos_loop(panda, [(0, -1, 0), (0, 1, 0)], movetime)
-    fwds = (0, 0, 0)
-    bwds = (180, 0, 0)
-    actor_add_heading_loop(panda, [bwds, bwds, fwds, fwds], [0.9 * movetime, 0.1 * movetime])
+    actor_path_with_turn_anim(panda, [(0, -1, 0), (0, 1, 0)], [3, 3])
 
     # animate camera
     game.add_task(
