@@ -8,7 +8,7 @@ from direct.interval.IntervalGlobal import Sequence
 
 from panda3d.core import Point3
 from panda3d.core import WindowProperties
-from panda3d.core import AmbientLight, PointLight
+from panda3d.core import AmbientLight, PointLight, DirectionalLight
 from panda3d.core import Vec4
 
 
@@ -36,11 +36,13 @@ class HackableApp(ShowBase):
     def add_renderable_node(self, node):
         self.renderables.append(self.render.attachNewNode(node))
 
-    def add_light(self, light, pos=None):
+    def add_light(self, light, pos=None, hpr=None):
         self.add_renderable_node(light)
         self.render.setLight(self.renderables[-1])  # just added
         if pos is not None:
             self.renderables[-1].setPos(*pos)
+        if hpr is not None:
+            self.renderables[-1].setHpr(*hpr)
 
     def add_task(self, func, continuous=True):
         if continuous:
@@ -144,6 +146,12 @@ def get_point_light(r, g, b, const=1, linear=0, quadratic=1):
     return light
 
 
+def get_directional_light(r, g, b):
+    light = DirectionalLight(f"directionallight {r} {g} {b}")
+    light.setColor(Vec4(r, g, b, 1))
+    return light
+
+
 def build_game():
     game = HackableApp(1280, 720)
 
@@ -168,8 +176,9 @@ def build_game():
     )
 
     # add lighting
-    game.add_light(get_ambient_light(0.5, 0.2, 0.2))
-    game.add_light(get_point_light(1, 1, 1), pos=(0, 0, 2))
+    game.add_light(get_ambient_light(0.7, 0.2, 0.2))
+    game.add_light(get_point_light(0.2, 0.5, 1), pos=(0, 0, 2))
+    game.add_light(get_directional_light(0.4, 0.4, 0.4), hpr=(30, -45, 0))
 
     return game
 
