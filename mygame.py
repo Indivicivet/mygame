@@ -5,8 +5,11 @@ from direct.showbase.ShowBase import ShowBase
 from direct.task import Task
 from direct.actor.Actor import Actor
 from direct.interval.IntervalGlobal import Sequence
+
 from panda3d.core import Point3
 from panda3d.core import WindowProperties
+from panda3d.core import AmbientLight
+from panda3d.core import Vec4
 
 
 class HackableApp(ShowBase):
@@ -29,6 +32,13 @@ class HackableApp(ShowBase):
     def add_renderable(self, renderable):
         self.renderables.append(renderable)
         renderable.reparentTo(self.render)
+
+    def add_renderable_node(self, node):
+        self.renderables.append(self.render.attachNewNode(node))
+
+    def add_light(self, light):
+        self.add_renderable_node(light)
+        self.render.setLight(self.renderables[-1])  # just added
 
     def add_task(self, func, continuous=True):
         if continuous:
@@ -119,6 +129,12 @@ def actor_path_with_turn_anim(actor, points, durations=None, turn_anim_time=0.2)
     )
 
 
+def get_ambient_light(r, g, b):
+    light = AmbientLight(f"ambientlight {r} {g} {b}")
+    light.setColor(Vec4(r, g, b, 1))
+    return light
+
+
 def build_game():
     game = HackableApp(1280, 720)
 
@@ -141,6 +157,9 @@ def build_game():
     game.add_task(
         lambda app, t: app.camera.setPos(0, - 5 - t.time, 1 + 0.1 * t.time)
     )
+
+    # add lighting
+    game.add_light(get_ambient_light(0.5, 0.2, 0.2))
 
     return game
 
