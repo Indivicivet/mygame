@@ -29,11 +29,19 @@ class HackableApp(ShowBase):
 
 def invoke_interval_point3_loop(bound_actor_method, points, durations=None):
     if durations is None:
-        durations = itertools.repeat(1)
+        durations = 1
+    try:
+        iter(durations)
+    except TypeError:
+        durations = [durations]
     loop = Sequence(
         *[
             bound_actor_method(dur, Point3(pt), Point3(prv))
-            for prv, pt, dur in zip(points, points[1:] + [points[0]], durations)
+            for prv, pt, dur in zip(
+                points,
+                points[1:] + [points[0]],
+                itertools.cycle(durations),
+            )
         ],
         # name=f"{actor!r} loop: pts{points}",
     )
@@ -63,7 +71,11 @@ def build_game():
     panda.loop("walk")
     game.add_renderable(panda)
 
-    actor_add_pos_loop(panda, [(0, -1, 0), (0, 1, 0)], [3, 3])
+    movetime = 2
+    actor_add_pos_loop(panda, [(0, -1, 0), (0, 1, 0)], movetime)
+    fwds = (0, 0, 0)
+    bwds = (180, 0, 0)
+    actor_add_heading_loop(panda, [bwds, bwds, fwds, fwds], [0.9 * movetime, 0.1 * movetime])
 
     # animate camera
     game.add_task(
