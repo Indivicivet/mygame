@@ -155,6 +155,7 @@ def get_directional_light(r, g, b, shadows=True):
     light.setColor(Vec4(r, g, b, 1))
     if shadows:
         light.setShadowCaster(True)  # doesn't seem to work?
+        # todo :: need to figure out how lenses work at some point
     return light
 
 
