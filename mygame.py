@@ -1,6 +1,10 @@
+import itertools
+
 from direct.showbase.ShowBase import ShowBase
 from direct.task import Task
 from direct.actor.Actor import Actor
+from direct.interval.IntervalGlobal import Sequence
+from panda3d.core import Point3
 
 
 class HackableApp(ShowBase):
@@ -23,6 +27,22 @@ class HackableApp(ShowBase):
         self.taskMgr.add(wrapped_func, func.__name__)
 
 
+def actor_add_pos_loop(actor, points, durations=None):
+    if durations is None:
+        durations = itertools.repeat(1)
+    loop = Sequence(
+        *[
+            actor.posInterval(dur, Point3(end), startPos=Point3(start))
+            for start, end, dur in zip(
+                points, points[1:] + [points[0]], durations
+            )
+        ],
+        name=f"{actor!r} loop: pts{points}",
+    )
+    loop.loop()
+    # todo :: I think this will likely get GC'd, figure that out.
+
+
 def build_game():
     game = HackableApp()
 
@@ -36,6 +56,8 @@ def build_game():
     panda.setScale(*[0.003] * 3)
     panda.loop("walk")
     game.add_renderable(panda)
+
+    actor_add_pos_loop(panda, [(0, -1, 0), (0, 1, 0)], [3, 3])
 
     # animate camera
     game.add_task(
