@@ -1,5 +1,4 @@
 import itertools
-import math
 
 from direct.showbase.ShowBase import ShowBase
 from direct.task import Task
@@ -9,7 +8,7 @@ from direct.interval.IntervalGlobal import Sequence
 from panda3d.core import Point3
 from panda3d.core import WindowProperties
 from panda3d.core import AmbientLight, PointLight, DirectionalLight
-from panda3d.core import Vec4
+from panda3d.core import Vec2, Vec4
 
 
 class HackableApp(ShowBase):
@@ -92,9 +91,6 @@ def actor_add_heading_loop(actor, points, durations=None):
     invoke_interval_point3_loop(actor.hprInterval, points, durations)
 
 
-RADS_TO_DEGS = 180 / math.pi
-
-
 def get_smoothed_hprs(headings):
     # smooths headings but you still get a jump start to end
     # such terrible code
@@ -122,7 +118,7 @@ def actor_path_with_turn_anim(actor, points, durations=None, turn_anim_time=0.2)
         actor,
         get_smoothed_hprs(
             [
-                -90 + math.atan2(vec.y, vec.x) * RADS_TO_DEGS
+                Vec2(0, 1).signedAngleDeg(vec.getXy())
                 for a, b in zip(points, points[1:] + [points[0]])
                 for vec in [Point3(a) - Point3(b)] * 2
             ]
