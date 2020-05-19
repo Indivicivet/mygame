@@ -66,16 +66,38 @@ def actor_add_heading_loop(actor, points, durations=None):
 RADS_TO_DEGS = 180 / math.pi
 
 
+def get_smoothed_hprs(headings):
+    # smooths headings but you still get a jump start to end
+    # such terrible code
+    # hard to avoid having a big spin at the end with finite loops;
+    # probably need to add a 0-time interval
+    # but I can't be bothered implementing atm
+    # so works nicely iff the final angle is 180deg turn or something
+    def get_closer(heading, prev):
+        min, argmin = 999999, 0
+        for i in range(-10, 10):
+            if (new := abs((angle := heading + 360 * i) - prev)) < min:
+                min = new
+                argmin = angle
+        return argmin
+    new_headings = [headings[0]]
+    for next in headings[1:]:
+        new_headings.append(get_closer(next, new_headings[-1]))
+    return [Point3(heading, 0, 0) for heading in new_headings]
+
+
 def actor_path_with_turn_anim(actor, points, durations=None, turn_anim_time=0.2):
     durations = _loopable_value(durations)
     actor_add_pos_loop(actor, points, durations)
     actor_add_heading_loop(
         actor,
-        [
-            Point3(-90 + math.atan2(vec.y, vec.x) * RADS_TO_DEGS, 0, 0)
-            for a, b in zip(points, points[1:] + [points[0]])
-            for vec in [Point3(a) - Point3(b)] * 2
-        ],
+        get_smoothed_hprs(
+            [
+                -90 + math.atan2(vec.y, vec.x) * RADS_TO_DEGS
+                for a, b in zip(points, points[1:] + [points[0]])
+                for vec in [Point3(a) - Point3(b)] * 2
+            ]
+        ),
         [
             x
             for d in durations
@@ -99,7 +121,7 @@ def build_game():
     game.add_renderable(panda)
 
     actor_path_with_turn_anim(
-        panda, [(0, -1, 0), (0, 1, 0), (3, 0, 0), (2, 1, 0), (2, -1, 0)]
+        panda, [(0, -1, 0), (-2, 0, 0), (0, 1, 0), (3, 0, 0), (2, 1, 0), (2, -1, 0)], 
     )
 
     # animate camera
