@@ -27,20 +27,26 @@ class HackableApp(ShowBase):
         self.taskMgr.add(wrapped_func, func.__name__)
 
 
-def actor_add_pos_loop(actor, points, durations=None):
+def invoke_interval_point3_loop(bound_actor_method, points, durations=None):
     if durations is None:
         durations = itertools.repeat(1)
     loop = Sequence(
         *[
-            actor.posInterval(dur, Point3(end), startPos=Point3(start))
-            for start, end, dur in zip(
-                points, points[1:] + [points[0]], durations
-            )
+            bound_actor_method(dur, Point3(pt), Point3(prv))
+            for prv, pt, dur in zip(points, points[1:] + [points[0]], durations)
         ],
-        name=f"{actor!r} loop: pts{points}",
+        # name=f"{actor!r} loop: pts{points}",
     )
     loop.loop()
     # todo :: I think this will likely get GC'd, figure that out.
+
+
+def actor_add_pos_loop(actor, points, durations=None):
+    invoke_interval_point3_loop(actor.posInterval, points, durations)
+
+
+def actor_add_heading_loop(actor, points, durations=None):
+    invoke_interval_point3_loop(actor.hprInterval, points, durations)
 
 
 def build_game():
