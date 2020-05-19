@@ -8,7 +8,7 @@ from direct.interval.IntervalGlobal import Sequence
 
 from panda3d.core import Point3
 from panda3d.core import WindowProperties
-from panda3d.core import AmbientLight
+from panda3d.core import AmbientLight, PointLight
 from panda3d.core import Vec4
 
 
@@ -36,9 +36,11 @@ class HackableApp(ShowBase):
     def add_renderable_node(self, node):
         self.renderables.append(self.render.attachNewNode(node))
 
-    def add_light(self, light):
+    def add_light(self, light, pos=None):
         self.add_renderable_node(light)
         self.render.setLight(self.renderables[-1])  # just added
+        if pos is not None:
+            self.renderables[-1].setPos(*pos)
 
     def add_task(self, func, continuous=True):
         if continuous:
@@ -135,6 +137,13 @@ def get_ambient_light(r, g, b):
     return light
 
 
+def get_point_light(r, g, b, const=1, linear=0, quadratic=1):
+    light = PointLight(f"pointlight {r} {g} {b}")
+    light.setColor(Vec4(r, g, b, 1))
+    light.setAttenuation((const, linear, quadratic))  # c l q
+    return light
+
+
 def build_game():
     game = HackableApp(1280, 720)
 
@@ -160,6 +169,7 @@ def build_game():
 
     # add lighting
     game.add_light(get_ambient_light(0.5, 0.2, 0.2))
+    game.add_light(get_point_light(1, 1, 1), pos=(0, 0, 2))
 
     return game
 
