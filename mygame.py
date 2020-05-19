@@ -61,14 +61,21 @@ def actor_add_heading_loop(actor, points, durations=None):
 RADS_TO_DEGS = 180 / math.pi
 
 
-def actor_path_with_turn_anim(actor, points, durations=[1], turn_anim_time=0.2):
+def actor_path_with_turn_anim(actor, points, durations=None, turn_anim_time=0.2):
+    # dry...
+    if durations is None:
+        durations = 1
+    try:
+        iter(durations)
+    except TypeError:
+        durations = [durations]
     actor_add_pos_loop(actor, points, durations)
     actor_add_heading_loop(
         actor,
         [
-            Point3(math.atan2(vec.x, vec.y) * RADS_TO_DEGS, 0, 0)
+            Point3(-90 + math.atan2(vec.y, vec.x) * RADS_TO_DEGS, 0, 0)
             for a, b in zip(points, points[1:] + [points[0]])
-            for vec in [(Point3(a) - Point3(b))] * 2
+            for vec in [Point3(a) - Point3(b)] * 2
         ],
         [
             x
@@ -92,7 +99,9 @@ def build_game():
     panda.loop("walk")
     game.add_renderable(panda)
 
-    actor_path_with_turn_anim(panda, [(0, -1, 0), (0, 1, 0)], [3, 3])
+    actor_path_with_turn_anim(
+        panda, [(0, -1, 0), (0, 1, 0), (2, 1, 0), (2, -1, 0)]
+    )
 
     # animate camera
     game.add_task(
