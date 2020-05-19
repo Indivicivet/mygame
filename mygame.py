@@ -100,12 +100,12 @@ def build_game():
     game.add_renderable(panda)
 
     actor_path_with_turn_anim(
-        panda, [(0, -1, 0), (0, 1, 0), (2, 1, 0), (2, -1, 0)]
+        panda, [(0, -1, 0), (0, 1, 0), (3, 0, 0), (2, 1, 0), (2, -1, 0)]
     )
 
     # animate camera
     game.add_task(
-        lambda app, t: app.camera.setPos(0, -t.time, 0.1 * t.time)
+        lambda app, t: app.camera.setPos(0, - 5 - t.time, 1 + 0.1 * t.time)
     )
 
     return game
