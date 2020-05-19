@@ -22,6 +22,8 @@ class HackableApp(ShowBase):
         elif width is not None or height is not None:
             raise ValueError("must specify both of height/width or neither")
 
+        self.render.setShaderAuto()
+
         self.renderables = []
 
     def resize_window(self, width, height):
