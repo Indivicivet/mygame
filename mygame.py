@@ -6,12 +6,25 @@ from direct.task import Task
 from direct.actor.Actor import Actor
 from direct.interval.IntervalGlobal import Sequence
 from panda3d.core import Point3
+from panda3d.core import WindowProperties
 
 
 class HackableApp(ShowBase):
-    def __init__(self):
+    def __init__(self, width=None, height=None):
         super().__init__(self)
+
+        self.disableMouse()
+        if width is not None and height is not None:
+            self.resize_window(width, height)
+        elif width is not None or height is not None:
+            raise ValueError("must specify both of height/width or neither")
+
         self.renderables = []
+
+    def resize_window(self, width, height):
+        window_prop = WindowProperties()
+        window_prop.setSize(width, height)
+        self.win.requestProperties(window_prop)
 
     def add_renderable(self, renderable):
         self.renderables.append(renderable)
@@ -107,7 +120,7 @@ def actor_path_with_turn_anim(actor, points, durations=None, turn_anim_time=0.2)
 
 
 def build_game():
-    game = HackableApp()
+    game = HackableApp(1280, 720)
 
     # add some trees n stuff
     scene = game.loader.loadModel("models/environment")
