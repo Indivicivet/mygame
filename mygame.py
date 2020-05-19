@@ -28,13 +28,18 @@ class HackableApp(ShowBase):
         self.taskMgr.add(wrapped_func, func.__name__)
 
 
-def invoke_interval_point3_loop(bound_actor_method, points, durations=None):
-    if durations is None:
-        durations = 1
+def _loopable_value(list_or_val, default_val=1):
+    if list_or_val is None:
+        return [default_val]
     try:
-        iter(durations)
+        iter(list_or_val)
+        return list_or_val
     except TypeError:
-        durations = [durations]
+        return [list_or_val]
+
+
+def invoke_interval_point3_loop(bound_actor_method, points, durations=None):
+    durations = _loopable_value(durations)
     loop = Sequence(
         *[
             bound_actor_method(dur, Point3(pt), Point3(prv))
@@ -62,13 +67,7 @@ RADS_TO_DEGS = 180 / math.pi
 
 
 def actor_path_with_turn_anim(actor, points, durations=None, turn_anim_time=0.2):
-    # dry...
-    if durations is None:
-        durations = 1
-    try:
-        iter(durations)
-    except TypeError:
-        durations = [durations]
+    durations = _loopable_value(durations)
     actor_add_pos_loop(actor, points, durations)
     actor_add_heading_loop(
         actor,
