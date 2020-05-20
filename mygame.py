@@ -194,6 +194,14 @@ def build_game():
         loader.loadModel("models/environment"), scale=0.1, pos=(-5, 40, 0),
     )
 
+    for heading, x, y in [(15, 1, 1), (35, 3, 0), (0, 1, -1)]:
+        game.add_renderable(
+            loader.loadModel("models/panda-model"),
+            scale=0.001,
+            pos=(-3 + x, 10 + y, 0),
+            hpr=(heading, 0, 0),
+        )
+
     game.add_renderable(
         load_and_animate(
             "models/panda-model",
