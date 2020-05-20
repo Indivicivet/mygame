@@ -176,8 +176,6 @@ def build_game():
     panda = Actor("models/panda-model", {"walk": "models/panda-walk4"})
     panda.setScale(*[0.003] * 3)
     panda.loop("walk")
-    game.add_renderable(panda)
-
     actor_path_with_turn_anim(
         panda, [
             (0, -1, 0),
@@ -188,6 +186,7 @@ def build_game():
             (2, -1, 0),
         ], 
     )
+    game.add_renderable(panda)
 
     # animate camera
     game.add_task(
