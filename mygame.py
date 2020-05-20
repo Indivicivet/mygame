@@ -114,9 +114,7 @@ def invoke_interval_point3_loop(bound_actor_method, points, durations=None):
         *[
             bound_actor_method(dur, Point3(pt), Point3(prv))
             for prv, pt, dur in zip(
-                points,
-                points[1:] + [points[0]],
-                itertools.cycle(durations),
+                points, points[1:] + [points[0]], itertools.cycle(durations),
             )
         ],
         # name=f"{actor!r} loop: pts{points}",
@@ -147,13 +145,16 @@ def get_smoothed_hprs(headings):
                 min = new
                 argmin = angle
         return argmin
+
     new_headings = [headings[0]]
     for next in headings[1:]:
         new_headings.append(get_closer(next, new_headings[-1]))
     return [Point3(heading, 0, 0) for heading in new_headings]
 
 
-def actor_path_with_turn_anim(actor, points, durations=None, turn_anim_time=0.2):
+def actor_path_with_turn_anim(
+    actor, points, durations=None, turn_anim_time=0.2
+):
     durations = _loopable_value(durations)
     actor_add_pos_loop(actor, points, durations)
     actor_add_heading_loop(
@@ -169,15 +170,12 @@ def actor_path_with_turn_anim(actor, points, durations=None, turn_anim_time=0.2)
             x
             for d in durations
             for x in [d * (1 - turn_anim_time), d * turn_anim_time]
-        ]
+        ],
     )
 
 
 def load_and_animate(
-    model,
-    animations,
-    follow_path=None,
-    **follow_path_kwargs,
+    model, animations, follow_path=None, **follow_path_kwargs,
 ):
     actor = Actor(model, animations)
     actor.loop(list(animations)[0])
@@ -191,9 +189,7 @@ def build_game():
 
     # add some trees n stuff
     game.add_renderable(
-        loader.loadModel("models/environment"),
-        scale=0.1,
-        pos=(-5, 40, 0),
+        loader.loadModel("models/environment"), scale=0.1, pos=(-5, 40, 0),
     )
 
     game.add_renderable(
@@ -214,7 +210,7 @@ def build_game():
 
     # animate camera
     game.add_task(
-        lambda app, t: app.camera.setPos(0, - 5 - t.time, 1 + 0.1 * t.time)
+        lambda app, t: app.camera.setPos(0, -5 - t.time, 1 + 0.1 * t.time)
     )
 
     # add lighting
