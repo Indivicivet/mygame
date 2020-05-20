@@ -179,7 +179,14 @@ def build_game():
     game.add_renderable(panda)
 
     actor_path_with_turn_anim(
-        panda, [(0, -1, 0), (-2, 0, 0), (0, 1, 0), (3, 0, 0), (2, 1, 0), (2, -1, 0)], 
+        panda, [
+            (0, -1, 0),
+            (-2, 0, 0),
+            (0, 1, 0),
+            (3, 0, 0),
+            (2, 1, 0),
+            (2, -1, 0),
+        ], 
     )
 
     # animate camera
