@@ -204,7 +204,9 @@ def build_game():
             pos=(-3 + x, 10 + y, 0),
             hpr=(heading, 0, 0),
         )
-        for heading, x, y in [(15, 1, 1), (35, 3, 0), (0, 1, -1)]
+        for heading, x, y in [
+            (15, 1, 1), (35, 3, 0), (0, 1, -1), (-30, -2, 0), (-10, -1, -1),
+        ]
     ]
 
     def bounce_panda(app, task):
