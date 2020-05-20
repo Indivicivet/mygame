@@ -177,8 +177,11 @@ def build_game():
     game = HackableApp(1280, 720)
 
     # add some trees n stuff
-    scene = loader.loadModel("models/environment")
-    game.add_renderable(scene, scale=0.1, pos=(-5, 40, 0))
+    game.add_renderable(
+        loader.loadModel("models/environment"),
+        scale=0.1,
+        pos=(-5, 40, 0),
+    )
 
     panda = Actor("models/panda-model", {"walk": "models/panda-walk4"})
     panda.loop("walk")
