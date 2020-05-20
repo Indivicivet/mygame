@@ -1,4 +1,5 @@
 import itertools
+import random
 
 from direct.showbase.ShowBase import ShowBase
 from direct.task import Task
@@ -196,13 +197,23 @@ def build_game():
         loader.loadModel("models/environment"), scale=0.1, pos=(-5, 40, 0),
     )
 
-    for heading, x, y in [(15, 1, 1), (35, 3, 0), (0, 1, -1)]:
+    pandas = [
         game.add_renderable(
             loader.loadModel("models/panda-model"),
             scale=0.001,
             pos=(-3 + x, 10 + y, 0),
             hpr=(heading, 0, 0),
         )
+        for heading, x, y in [(15, 1, 1), (35, 3, 0), (0, 1, -1)]
+    ]
+
+    game.add_task(
+        lambda app, t: (
+            t.time - int(t.time) < 0.5
+            and random.random() > 0.8
+            and random.choice(pandas).setZ(random.random() * 0.5 * t.time)
+        )
+    )
 
     game.add_renderable(
         load_and_animate(
