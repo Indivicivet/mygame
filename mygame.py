@@ -173,6 +173,19 @@ def actor_path_with_turn_anim(actor, points, durations=None, turn_anim_time=0.2)
     )
 
 
+def load_and_animate(
+    model,
+    animations,
+    follow_path=None,
+    **follow_path_kwargs,
+):
+    actor = Actor(model, animations)
+    actor.loop(list(animations)[0])
+    if follow_path is not None:
+        actor_path_with_turn_anim(actor, follow_path, **follow_path_kwargs)
+    return actor
+
+
 def build_game():
     game = HackableApp(1280, 720)
 
@@ -183,19 +196,21 @@ def build_game():
         pos=(-5, 40, 0),
     )
 
-    panda = Actor("models/panda-model", {"walk": "models/panda-walk4"})
-    panda.loop("walk")
-    actor_path_with_turn_anim(
-        panda, [
-            (0, -1, 0),
-            (-2, 0, 0),
-            (0, 1, 0),
-            (3, 0, 0),
-            (2, 1, 0),
-            (2, -1, 0),
-        ], 
+    game.add_renderable(
+        load_and_animate(
+            "models/panda-model",
+            {"walk": "models/panda-walk4"},
+            follow_path=[
+                (0, -1, 0),
+                (-2, 0, 0),
+                (0, 1, 0),
+                (3, 0, 0),
+                (2, 1, 0),
+                (2, -1, 0),
+            ],
+        ),
+        scale=0.003,
     )
-    game.add_renderable(panda, scale=0.003)
 
     # animate camera
     game.add_task(
