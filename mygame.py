@@ -54,7 +54,11 @@ class HackableApp(ShowBase):
         window_prop.setSize(width, height)
         self.win.requestProperties(window_prop)
 
-    def add_renderable(self, renderable):
+    def add_renderable(self, renderable, scale=None, pos=None):
+        if scale is not None:
+            renderable.setScale(scale)
+        if pos is not None:
+            renderable.setPos(*pos)
         self.renderables.append(renderable)
         renderable.reparentTo(self.render)
 
@@ -169,12 +173,9 @@ def build_game():
 
     # add some trees n stuff
     scene = loader.loadModel("models/environment")
-    scene.setScale(*[0.1] * 3)
-    scene.setPos(-5, 40, 0)
-    game.add_renderable(scene)
+    game.add_renderable(scene, scale=0.1, pos=(-5, 40, 0))
 
     panda = Actor("models/panda-model", {"walk": "models/panda-walk4"})
-    panda.setScale(*[0.003] * 3)
     panda.loop("walk")
     actor_path_with_turn_anim(
         panda, [
@@ -186,7 +187,7 @@ def build_game():
             (2, -1, 0),
         ], 
     )
-    game.add_renderable(panda)
+    game.add_renderable(panda, scale=0.003)
 
     # animate camera
     game.add_task(
