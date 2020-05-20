@@ -65,13 +65,13 @@ class HackableApp(ShowBase):
     def add_renderable(self, renderable, scale=None, pos=None):
         self.add_object(renderable, to_render=True, scale=scale, pos=pos)
 
-    def add_renderable_node(self, node):
+    def add_render_node(self, node):
         nodepath = self.render.attachNewNode(node)
         self.object_list.append(nodepath)
         return nodepath
 
     def add_light(self, light, pos=None, hpr=None):
-        nodepath = self.add_renderable_node(light)
+        nodepath = self.add_render_node(light)
         if pos is not None:
             nodepath.setPos(*pos)
         if hpr is not None:
