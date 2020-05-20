@@ -47,31 +47,36 @@ class HackableApp(ShowBase):
 
         self.render.setShaderAuto()
 
-        self.renderables = []
+        self.object_list = []
 
     def resize_window(self, width, height):
         window_prop = WindowProperties()
         window_prop.setSize(width, height)
         self.win.requestProperties(window_prop)
 
-    def add_renderable(self, renderable, scale=None, pos=None):
+    def add_object(self, obj, to_render=False, scale=None, pos=None):
         if scale is not None:
-            renderable.setScale(scale)
+            obj.setScale(scale)
         if pos is not None:
-            renderable.setPos(*pos)
-        self.renderables.append(renderable)
-        renderable.reparentTo(self.render)
+            obj.setPos(*pos)
+        self.object_list.append(obj)
+        obj.reparentTo(self.render)
+
+    def add_renderable(self, renderable, scale=None, pos=None):
+        self.add_object(renderable, to_render=True, scale=scale, pos=pos)
 
     def add_renderable_node(self, node):
-        self.renderables.append(self.render.attachNewNode(node))
+        nodepath = self.render.attachNewNode(node)
+        self.object_list.append(nodepath)
+        return nodepath
 
     def add_light(self, light, pos=None, hpr=None):
-        self.add_renderable_node(light)
-        self.render.setLight(self.renderables[-1])  # just added
+        nodepath = self.add_renderable_node(light)
         if pos is not None:
-            self.renderables[-1].setPos(*pos)
+            nodepath.setPos(*pos)
         if hpr is not None:
-            self.renderables[-1].setHpr(*hpr)
+            nodepath.setHpr(*hpr)
+        self.render.setLight(nodepath)  # just added
 
     def add_ambient_light(self, r, g, b):
         self.add_light(get_ambient_light(r, g, b))
