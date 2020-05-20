@@ -54,16 +54,18 @@ class HackableApp(ShowBase):
         window_prop.setSize(width, height)
         self.win.requestProperties(window_prop)
 
-    def add_object(self, obj, to_render=False, scale=None, pos=None):
+    def add_object(self, obj, to_render=False, scale=None, pos=None, hpr=None):
         if scale is not None:
             obj.setScale(scale)
         if pos is not None:
             obj.setPos(*pos)
+        if hpr is not None:
+            obj.setHpr(*hpr)
         self.object_list.append(obj)
         obj.reparentTo(self.render)
 
-    def add_renderable(self, renderable, scale=None, pos=None):
-        self.add_object(renderable, to_render=True, scale=scale, pos=pos)
+    def add_renderable(self, renderable, **kwargs):
+        self.add_object(renderable, to_render=True, **kwargs)
 
     def add_render_node(self, node):
         nodepath = self.render.attachNewNode(node)
