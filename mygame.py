@@ -11,6 +11,30 @@ from panda3d.core import AmbientLight, PointLight, DirectionalLight
 from panda3d.core import Vec2, Vec4
 
 
+def get_ambient_light(r, g, b):
+    light = AmbientLight(f"ambientlight {r} {g} {b}")
+    light.setColor(Vec4(r, g, b, 1))
+    return light
+
+
+def get_point_light(r, g, b, const=1, linear=0, quadratic=1, shadows=True):
+    light = PointLight(f"pointlight {r} {g} {b}")
+    light.setColor(Vec4(r, g, b, 1))
+    light.setAttenuation((const, linear, quadratic))  # c l q
+    if shadows:
+        light.setShadowCaster(True)
+    return light
+
+
+def get_directional_light(r, g, b, shadows=True):
+    light = DirectionalLight(f"directionallight {r} {g} {b}")
+    light.setColor(Vec4(r, g, b, 1))
+    if shadows:
+        light.setShadowCaster(True)  # doesn't seem to work?
+        # todo :: need to figure out how lenses work at some point
+    return light
+
+
 class HackableApp(ShowBase):
     def __init__(self, width=None, height=None):
         super().__init__(self)
@@ -44,6 +68,15 @@ class HackableApp(ShowBase):
             self.renderables[-1].setPos(*pos)
         if hpr is not None:
             self.renderables[-1].setHpr(*hpr)
+
+    def add_ambient_light(self, r, g, b):
+        self.add_light(get_ambient_light(r, g, b))
+
+    def add_point_light(self, r, g, b, pos=None):
+        self.add_light(get_point_light(r, g, b), pos=pos)
+
+    def add_directional_light(self, r, g, b, hpr=None):
+        self.add_light(get_directional_light(r, g, b), hpr=hpr)
 
     def add_task(self, func, continuous=True):
         if continuous:
@@ -131,30 +164,6 @@ def actor_path_with_turn_anim(actor, points, durations=None, turn_anim_time=0.2)
     )
 
 
-def get_ambient_light(r, g, b):
-    light = AmbientLight(f"ambientlight {r} {g} {b}")
-    light.setColor(Vec4(r, g, b, 1))
-    return light
-
-
-def get_point_light(r, g, b, const=1, linear=0, quadratic=1, shadows=True):
-    light = PointLight(f"pointlight {r} {g} {b}")
-    light.setColor(Vec4(r, g, b, 1))
-    light.setAttenuation((const, linear, quadratic))  # c l q
-    if shadows:
-        light.setShadowCaster(True)
-    return light
-
-
-def get_directional_light(r, g, b, shadows=True):
-    light = DirectionalLight(f"directionallight {r} {g} {b}")
-    light.setColor(Vec4(r, g, b, 1))
-    if shadows:
-        light.setShadowCaster(True)  # doesn't seem to work?
-        # todo :: need to figure out how lenses work at some point
-    return light
-
-
 def build_game():
     game = HackableApp(1280, 720)
 
@@ -179,11 +188,11 @@ def build_game():
     )
 
     # add lighting
-    game.add_light(get_ambient_light(0.3, 0.1, 0.1))
-    game.add_light(get_point_light(0.1, 0.3, 0.6), pos=(0, 0, 2))
-    game.add_light(get_directional_light(0.3, 0.3, 0.3), hpr=(30, -45, 0))
-    game.add_light(get_directional_light(0, 0.3, 0.1), hpr=(60, -60, 0))
-    game.add_light(get_directional_light(0, 0.1, 0.4), hpr=(-5, -60, 0))
+    game.add_ambient_light(0.3, 0.1, 0.1)
+    game.add_point_light(0.1, 0.3, 0.6, pos=(0, 0, 2))
+    game.add_directional_light(0.3, 0.3, 0.3, hpr=(30, -45, 0))
+    game.add_directional_light(0, 0.3, 0.1, hpr=(60, -60, 0))
+    game.add_directional_light(0, 0.1, 0.4, hpr=(-5, -60, 0))
 
     return game
 
