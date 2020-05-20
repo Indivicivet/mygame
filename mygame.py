@@ -63,9 +63,10 @@ class HackableApp(ShowBase):
             obj.setHpr(*hpr)
         self.object_list.append(obj)
         obj.reparentTo(self.render)
+        return obj
 
     def add_renderable(self, renderable, **kwargs):
-        self.add_object(renderable, to_render=True, **kwargs)
+        return self.add_object(renderable, to_render=True, **kwargs)
 
     def add_render_node(self, node):
         nodepath = self.render.attachNewNode(node)
@@ -78,16 +79,17 @@ class HackableApp(ShowBase):
             nodepath.setPos(*pos)
         if hpr is not None:
             nodepath.setHpr(*hpr)
-        self.render.setLight(nodepath)  # just added
+        self.render.setLight(nodepath)
+        return nodepath
 
     def add_ambient_light(self, r, g, b):
-        self.add_light(get_ambient_light(r, g, b))
+        return self.add_light(get_ambient_light(r, g, b))
 
     def add_point_light(self, r, g, b, pos=None):
-        self.add_light(get_point_light(r, g, b), pos=pos)
+        return self.add_light(get_point_light(r, g, b), pos=pos)
 
     def add_directional_light(self, r, g, b, hpr=None):
-        self.add_light(get_directional_light(r, g, b), hpr=hpr)
+        return self.add_light(get_directional_light(r, g, b), hpr=hpr)
 
     def add_task(self, func, continuous=True):
         if continuous:
