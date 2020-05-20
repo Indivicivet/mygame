@@ -100,7 +100,7 @@ class HackableApp(ShowBase):
         else:
             def wrapped_func(task):
                 func(self, task)
-        self.taskMgr.add(wrapped_func, func.__name__)
+        return self.taskMgr.add(wrapped_func, func.__name__)
 
 
 def _loopable_value(list_or_val, default_val=1):
