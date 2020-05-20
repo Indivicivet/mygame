@@ -207,13 +207,11 @@ def build_game():
         for heading, x, y in [(15, 1, 1), (35, 3, 0), (0, 1, -1)]
     ]
 
-    game.add_task(
-        lambda app, t: (
-            t.time - int(t.time) < 0.5
-            and random.random() > 0.8
-            and random.choice(pandas).setZ(random.random() * 0.5 * t.time)
-        )
-    )
+    def bounce_panda(app, task):
+        if task.time - int(task.time) < 0.5 and random.random() > 0.8:
+            random.choice(pandas).setZ(random.random() * 0.5 * task.time)
+
+    game.add_task(bounce_panda)
 
     game.add_renderable(
         load_and_animate(
